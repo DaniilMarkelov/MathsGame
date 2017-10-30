@@ -43,23 +43,25 @@ def r():
         input = easygui.buttonbox(str(no_1) + str(symbol) + str(no_2) + "=",
                                   "points: " + str(points),
                                   choices=[str(answer - random_button_no_),
-                                           str(answer - random_button_no_),
+                                           str(answer + random_button_no_),
                                            str(answer)])
     if random_button == 3:
         input = easygui.buttonbox(str(no_1) + str(symbol) + str(no_2) + "=",
                                   "points: " + str(points),
                                   choices=[str(answer + random_button_no_),
                                            str(answer),
-                                           str(answer + random_button_no_)])
+                                           str(answer - random_button_no_)])
 
     if float(input) == float(answer):
-        easygui.msgbox("Correct!")
         points = points + 5
+        return easygui.buttonbox(("Correct!"),
+                                 choices=['[OK]', '[EXIT]'])
     if float(input) != float(answer):
-        easygui.msgbox("Wrong!")
-        easygui.msgbox("it's " + str(answer))
         points = points - 2
+        return easygui.buttonbox(("Wrong!\nIt is " + str(answer)),
+                                 choices=['[OK]', '[EXIT]'])
 
 while True:
-    pass
-    r()
+    response = r()
+    if str(response) == '[EXIT]':
+        break
