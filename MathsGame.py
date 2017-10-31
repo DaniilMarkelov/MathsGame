@@ -3,13 +3,16 @@
 
 import random
 import easygui
+import time
 
 points = 0
+correct = 0
+wrong = 0
 
 
 def r():
-    global points
-    symbol_random = random.randint(1, 3)
+    global points, correct, wrong
+    symbol_random = random.randint(1, 4)
     answer = 0
     symbol = 0
 
@@ -31,6 +34,13 @@ def r():
         answer = no_1 * no_2
         symbol = "x"
 
+    if symbol_random == 4:
+        no_3 = random.randint(3, 12)
+        no_2 = random.randint(3, 12)
+        no_1 = no_3 * no_2
+        answer = no_1 / no_2
+        symbol = "/"
+
     random_button = random.randint(1, 3)
     random_button_no_ = random.randint(1, 5)
     if random_button == 1:
@@ -39,12 +49,14 @@ def r():
                                   choices=[str(answer),
                                            str(answer + random_button_no_),
                                            str(answer - random_button_no_)])
+
     if random_button == 2:
         input = easygui.buttonbox(str(no_1) + str(symbol) + str(no_2) + "=",
                                   "points: " + str(points),
                                   choices=[str(answer - random_button_no_),
                                            str(answer + random_button_no_),
                                            str(answer)])
+
     if random_button == 3:
         input = easygui.buttonbox(str(no_1) + str(symbol) + str(no_2) + "=",
                                   "points: " + str(points),
@@ -54,14 +66,19 @@ def r():
 
     if float(input) == float(answer):
         points = points + 5
+        correct = correct + 1
         return easygui.buttonbox(("Correct!"),
                                  choices=['[OK]', '[EXIT]'])
+
     if float(input) != float(answer):
         points = points - 2
+        wrong = wrong + 1
         return easygui.buttonbox(("Wrong!\nIt is " + str(answer)),
                                  choices=['[OK]', '[EXIT]'])
 
 while True:
     response = r()
     if str(response) == '[EXIT]':
+        easygui.msgbox("Correct= " + str(correct) + "\nWrong=  " + str(wrong) +
+                       "\nPoints=  " + str(points))
         break
