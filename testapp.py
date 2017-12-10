@@ -11,14 +11,15 @@ from functools import partial
 from kivy.properties import ObjectProperty
 from kivy.clock import Clock
 
-layout = FloatLayout(size=(300, 300)) 
+layout = FloatLayout(size=(300, 300))
+current_app = ObjectProperty(None) 
+random_button = 0
 
 class TestApp(App):
-    current_app = ObjectProperty(None)
-
+   
     def build(self):
-        self.current_app = TestApp()
-        layout.clear_widgets()
+        global random_button
+        current_app = TestApp()
 
         no1 = random.randint(1, 10)
         no2 = random.randint(1, 10)
@@ -32,41 +33,55 @@ class TestApp(App):
 
         random_button = random.randint(1, 3)
 
-        button_1 = Button(text= str(answer + random.randint(1, 5)),
+        if random_button == 1:
+            answer_1 = answer 
+            answer_2 = answer + random.randint(1, 5)
+            answer_3 = answer - random.randint(1, 5)
+
+        if random_button == 2:
+            answer_1 = answer - random.randint(1, 5)
+            answer_2 = answer
+            answer_3 = answer + random.randint(1, 5)
+
+        if random_button == 3:
+            answer_1 = answer + random.randint(1, 5)
+            answer_2 = answer - random.randint(1, 5)
+            answer_3 = answer
+
+        button_1 = Button(text= str(answer_1),
                           size_hint= [.33, .3],
                           pos= (0, 0),
                           font_size='75sp',
-                          on_press=partial(self.correction, answer = False))
+                          on_press=partial(self.correction, answer_no = 1))
         layout.add_widget(button_1)
     
-        button_2 = Button(text= str(answer - random.randint(1, 5)),
+        button_2 = Button(text= str(answer_2),
                           size_hint= [.33, .3],
                           pos= (267.5, 0),
                           font_size='75sp',
-                          on_press=partial(self.correction, answer =False))
+                          on_press=partial(self.correction, answer_no = 2))
         layout.add_widget(button_2)
         
-        button_3 = Button(text= str(answer),
+        button_3 = Button(text= str(answer_3),
                           size_hint= [.33, .3],
                           pos= (535, 0),
                           font_size='75sp',
-                          on_press=partial(self.correction, answer = True))
+                          on_press=partial(self.correction, answer_no = 3))
         layout.add_widget(button_3)
 
         return layout
 
-    def correction(self, event, answer):
-        if self.current_app:
-            self.current_app.stop()
-        if answer==True:
-            self.current_app = Correct()
+    def correction(self, event, answer_no):
+        if answer_no == random_button:
+            current_app = Correct()
         else:
-            self.current_app = Wrong()
-        self.current_app.run()
+            current_app = Wrong()
+        current_app.run()
 
 class Correct(App):
     def build(self):
-        self.current_app = TestApp()
+        global current_app
+        current_app = TestApp()
         layout.clear_widgets()
         Clock.schedule_once(self.loop, 1)
         correct = Label(text= 'Correct!',
@@ -77,11 +92,12 @@ class Correct(App):
 
     def loop(self, dt):
         layout.clear_widgets()
-        self.current_app.run()
+        current_app.run()
  
 class Wrong(App):
     def build(self):
-        self.current_app = TestApp()
+        global current_app
+        current_app = TestApp()
         layout.clear_widgets()
         Clock.schedule_once(self.loop, 1)
         wrong = Label(text= 'Wrong!',
@@ -92,8 +108,8 @@ class Wrong(App):
 
     def loop(self, dt):
         layout.clear_widgets()
-        self.current_app.run()
+        current_app.run()
 
-
-app = TestApp()
-app.run()
+if __name__ == "__main__":
+    app = TestApp()
+    app.run()
