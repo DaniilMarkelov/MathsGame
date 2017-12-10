@@ -17,6 +17,7 @@ current_app = ObjectProperty(None)
 random_button = 0
 correct_score = 0
 wrong_score = 0
+question = 1
 
 
 class TestApp(App):
@@ -24,6 +25,10 @@ class TestApp(App):
     def build(self):
         global random_button
         current_app = TestApp()
+
+        if question == 21:
+            current_app = ExitApp()
+            current_app.run()
 
         random_sum = random.randint(1, 4)
 
@@ -71,6 +76,11 @@ class TestApp(App):
                               font_size='50sp')
         layout.add_widget(correct_label)
 
+        question_no = Label(text=str(question),
+                            pos_hint={'x': -.0, 'y': .43},
+                            font_size='60sp')
+        layout.add_widget(question_no)
+
         random_button = random.randint(1, 3)
 
         if random_button == 1:
@@ -112,6 +122,8 @@ class TestApp(App):
         return layout
 
     def correction(self, event, answer_no):
+        global question
+        question = question + 1
         if answer_no == random_button:
             current_app = Correct()
         else:
@@ -155,6 +167,39 @@ class Wrong(App):
         wrong_score = wrong_score + 1
         layout.clear_widgets()
         current_app.run()
+
+
+class ExitApp(App):
+    def build(self):
+        global correct_score
+        percent_no = correct_score * 5
+
+        you_got = Label(text='you got:',
+                        pos=(5, 150),
+                        font_size='50sp')
+
+        percent = Label(text=str(percent_no) + '%',
+                        pos=(5, 20),
+                        font_size='200sp')
+
+        if percent_no >= 80:
+            message = 'Well done!'
+        if percent_no <= 79 and percent_no >= 60:
+            message = 'Nearly there!'
+        if percent_no <= 59 and percent_no >= 20:
+            message = 'Better luck next time!'
+        if percent_no <= 19:
+            message = 'Need to study'
+
+        message_lbl = Label(text=message,
+                            pos=(5, -100),
+                            font_size='50sp')
+
+        layout.add_widget(percent)
+        layout.add_widget(you_got)
+        layout.add_widget(message_lbl)
+        return layout
+
 
 if __name__ == "__main__":
     app = TestApp()
