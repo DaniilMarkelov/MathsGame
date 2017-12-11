@@ -67,18 +67,20 @@ class TestApp(App):
         layout.add_widget(label)
 
         wrong_label = Label(text='wrong:  ' + str(wrong_score),
-                            pos_hint={'x':  .34, 'y':  .43},
-                            font_size='50sp')
+                            pos_hint={'x':  .35, 'y':  .43},
+                            font_size='50sp',
+                            color=(1, 0, 0, 1))
         layout.add_widget(wrong_label)
 
         correct_label = Label(text='correct:  ' + str(correct_score),
-                              pos_hint={'x': -.34, 'y': .43},
-                              font_size='50sp')
+                              pos_hint={'x': -.35, 'y': .43},
+                              font_size='50sp',
+                              color=(0, 1, 0, 0))
         layout.add_widget(correct_label)
 
         question_no = Label(text=str(question),
                             pos_hint={'x': -.0, 'y': .43},
-                            font_size='60sp')
+                            font_size='60sp',)
         layout.add_widget(question_no)
 
         random_button = random.randint(1, 3)
@@ -139,7 +141,8 @@ class Correct(App):
         Clock.schedule_once(self.loop, 1)
         correct = Label(text='Correct!',
                         pos=(5, 20),
-                        font_size='200sp')
+                        font_size='200sp',
+                        color=(0, 1, 0, 0))
         layout.add_widget(correct)
         return layout
 
@@ -158,7 +161,8 @@ class Wrong(App):
         Clock.schedule_once(self.loop, 1)
         wrong = Label(text='Wrong!',
                       pos=(5, 20),
-                      font_size='200sp')
+                      font_size='200sp',
+                      color=(1, 0, 0, 1))
         layout.add_widget(wrong)
         return layout
 
@@ -174,21 +178,27 @@ class ExitApp(App):
         global correct_score
         percent_no = correct_score * 5
 
+        if percent_no >= 50:
+            color_no = (0, 1, 0, 0)
+        if percent_no < 50:
+            color_no = (1, 0, 0, 1)
+
         you_got = Label(text='you got:',
                         pos=(5, 150),
                         font_size='50sp')
 
         percent = Label(text=str(percent_no) + '%',
                         pos=(5, 20),
-                        font_size='200sp')
+                        font_size='200sp',
+                        color=color_no)
 
         if percent_no >= 80:
             message = 'Well done!'
         if percent_no <= 79 and percent_no >= 60:
             message = 'Nearly there!'
-        if percent_no <= 59 and percent_no >= 20:
+        if percent_no <= 59 and percent_no >= 40:
             message = 'Better luck next time!'
-        if percent_no <= 19:
+        if percent_no <= 39:
             message = 'Need to study'
 
         message_lbl = Label(text=message,
